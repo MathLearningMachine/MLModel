@@ -6,6 +6,7 @@ import cv2
 ap = argparse.ArgumentParser()
 
 ap.add_argument("-i", "--image", required=True, help="Path to image file")
+args = vars(ap.parse_args)
 
 model = load_model("classification.model")
 
