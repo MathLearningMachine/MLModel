@@ -1,17 +1,10 @@
 import tensorflow as tf
 from tensorflow.keras.applications.resnet import preprocess_input
-<<<<<<< HEAD
 from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.applications import imagenet_utils
-from imutils.object_detection import non_max_suppression
-from tensorflow.keras.models import load_model
-=======
-from tensorflwo.keras.preprocessing.image import img_to_array
 from tensorflow.keras.applications import imagenet_utils
 from imutils.object_detection import non_max_suppression
 from pyimagesearch.detection_helpers import sliding_window
 from pyimagesearch.detection_helpers import image_pyramid
->>>>>>> 6a8a91382ac124141a73f1a7f95e5e620351bf8d
 import numpy as np
 import argparse
 import imutils
@@ -53,15 +46,6 @@ ap.add_argument("-v", "--visualize", type=int, default=-1,
 	help="whether or not to show extra visualizations for debugging")
 args = vars(ap.parse_args())
 
-<<<<<<< HEAD
-WIDTH = 430
-PYR_SCALE = 1.5
-WIN_STEP = 16
-ROI_SIZE = eval(args["size"])
-INPUT_SIZE = (32, 32)
-
-model = load_model("classification.model")
-=======
 WIDTH = 600
 PYR_SCALE = 1.5
 WIN_STEP = 16
@@ -69,7 +53,6 @@ ROI_SIZE = eval(args["size"])
 INPUT_SIZE = (224, 224)
 
 classifier = tf.saved_model.load("classification.model/saved_model.pb")
->>>>>>> 6a8a91382ac124141a73f1a7f95e5e620351bf8d
 orig = cv2.imread(args["image"])
 orig = imutils.resize(orig, width=WIDTH)
 (H, W) = orig.shape[:2]
@@ -131,87 +114,17 @@ rois = np.array(rois, dtype="float32")
 # long the classifications took
 print("[INFO] classifying ROIs...")
 start = time.time()
-<<<<<<< HEAD
-preds = model.predict_on_batch(rois)
-=======
 preds = model.predict(rois)
->>>>>>> 6a8a91382ac124141a73f1a7f95e5e620351bf8d
 end = time.time()
 print("[INFO] classifying ROIs took {:.5f} seconds".format(
 	end - start))
 # decode the predictions and initialize a dictionary which maps class
 # labels (keys) to any ROIs associated with that label (values)
-<<<<<<< HEAD
-print(preds.shape[1])
-print(preds.shape)
-
-class_index = {}
-x = "0"
-for line in open("/content/mathOCRdataset/coco.names"):
-  class_index[x] = [line[:-1]]
-  x = str(int(x) + 1)
-
-top = 200
-results = []
-for pred in preds:
-  top_indices = pred.argsort()[-top:][::-1]
-  result = [tuple(class_index[str(i)]) + (pred[i],) for i in top_indices]
-  result.sort(key=lambda x: x[1], reverse=True)
-  results.append(result)
-preds = results
-
-=======
 preds = imagenet_utils.decode_predictions(preds, top=1)
->>>>>>> 6a8a91382ac124141a73f1a7f95e5e620351bf8d
 labels = {}
 
 # loop over the predictions
 for (i, p) in enumerate(preds):
-<<<<<<< HEAD
-  # grab the prediction information for the current ROI
-  (label, prob) = p[0]
-	# filter out weak detections by ensuring the predicted probability
-	# is greater than the minimum probability
-  if prob >= args["min_conf"]:
-		# grab the bounding box associated with the prediction and
-		# convert the coordinates
-    box = locs[i]
-    # grab the list of predictions for the label and add the
-    # bounding box and probability to the list
-    L = labels.get(label, [])
-    L.append((box, prob))
-    labels[label] = L
-
-# loop over the labels for each of detected objects in the image
-for label in labels.keys():
-  # clone the original image so that we can draw on it
-  print("[INFO] showing results for '{}'".format(label))
-  clone = orig.copy()
-  # loop over all bounding boxes for the current label
-  for (box, prob) in labels[label]:
-    (startX, startY, endX, endY) = box
-    cv2.rectangle(clone, (startX, startY), (endX, endY), (0, 255, 0), 2)
-  # show the results *before* applying non-maxima suppression, then
-  # clone the image again so we can display the results *after*
-  # applying non-maxima suppression
-  cv2.imwrite("before.jpg", clone)
-  clone = orig.copy()
-  # extract the bounding boxes and associated prediction
-  # probabilities, then apply non-maxima suppression
-  boxes = np.array([p[0] for p in labels[label]])
-  proba = np.array([p[1] for p in labels[label]])
-  boxes = non_max_suppression(boxes, proba)
-  # loop over all bounding boxes that were kept after applying
-  # non-maxima suppression
-  for (startX, startY, endX, endY) in boxes:
-    # draw the bounding box and label on the image
-    cv2.rectangle(clone, (startX, startY), (endX, endY), (0, 255, 0), 2)
-    y = startY - 10 if startY - 10 > 10 else startY + 10
-    cv2.putText(clone, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 2)
-  # show the output after apply non-maxima suppression
-  cv2.imwrite("after.jpg", clone)
-  cv2.waitKey(0)
-=======
 	# grab the prediction information for the current ROI
 	(imagenetID, label, prob) = p[0]
 	# filter out weak detections by ensuring the predicted probability
@@ -259,4 +172,3 @@ for label in labels.keys():
 	# show the output after apply non-maxima suppression
 	cv2.imwrite("after.jpg", clone)
 	cv2.waitKey(0)
->>>>>>> 6a8a91382ac124141a73f1a7f95e5e620351bf8d

@@ -84,7 +84,7 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
 
 print("[INFO] training network...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY),
-	batch_size=32, epochs=100, verbose=1)
+	batch_size=32, epochs=20, verbose=1)
 
 model.save('classification.model')
 
